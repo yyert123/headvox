@@ -4,7 +4,8 @@
 - Documentation: full English README, plus Simplified Chinese and Japanese READMEs.
 - Project links (GitHub, live samples, docs) and expanded keywords/classifiers on PyPI.
 - Added `llms.txt` and `CITATION.cff`.
-- No code changes.
+- Added `scripts/bench.py` (reproducible benchmark) and `scripts/render_demo.py` (karaoke preview renderer), plus demo GIF/MP4 and pipeline diagram in `assets/`.
+- No changes to the library code.
 
 ## 0.1.0
 - First release.

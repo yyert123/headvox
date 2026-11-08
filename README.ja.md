@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="https://raw.githubusercontent.com/yyert123/headvox/main/assets/social-preview.png" alt="HeadVox：台本からナレーションと単語同期字幕を生成" width="760">
+
 # HeadVox
 
 **台本 → ナレーション音声 + 単語単位で同期した SRT/VTT 字幕を、コマンド一発で。**
@@ -11,6 +13,10 @@
 [![サンプル試聴](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB-yellow)](https://huggingface.co/spaces/headvox/headvox)
 
 [English](https://github.com/yyert123/headvox/blob/main/README.md) · [简体中文](https://github.com/yyert123/headvox/blob/main/README.zh-CN.md) · **日本語**
+
+<img src="https://raw.githubusercontent.com/yyert123/headvox/main/assets/demo.gif" alt="HeadVox デモ：単語ごとにハイライトされる字幕" width="720">
+
+<sub>無編集の実際の出力（英語サンプル）。ハイライトは <code>voiceover.json</code> の単語タイミングで描画。<a href="https://github.com/yyert123/headvox/blob/main/assets/demo-en.mp4">音声付き MP4</a></sub>
 
 </div>
 
@@ -60,6 +66,25 @@ headvox short.md -o out/ --voice ja-female --caption-chars 26 \
 プリセット音声：`ja-female`（`ja-JP-NanamiNeural`）、`ja-male`（`ja-JP-KeitaNeural`）、`zh-female`、`zh-male`、`en-female`、`en-male`。任意の edge-tts 音声 ID も指定できます（`edge-tts --list-voices`）。
 
 全オプション、Python API、JSON の形式、独自バックエンドの書き方は [英語版 README](https://github.com/yyert123/headvox/blob/main/README.md) を参照してください。
+
+## 📊 実測パフォーマンス
+
+[`scripts/bench.py`](https://github.com/yyert123/headvox/blob/main/scripts/bench.py) による実測（2 vCPU aarch64 クラウド環境、Python 3.12、2026-11-08）。「初回」は TTS サービスへの通信を含み、「キャッシュ」は再実行時の値です。
+
+| 台本 | バックエンド / 音声 | 音声長 | 字幕数 | 初回 | キャッシュ |
+|---|---|---|---|---|---|
+| `demo-en.md` | edge · en-US-AriaNeural | 20.1 秒 | 9 | 5.75 秒 | 0.63 秒 |
+| `demo-zh.md` | edge · zh-CN-XiaoxiaoNeural | 23.2 秒 | 8 | 5.25 秒 | 0.65 秒 |
+
+## 仕組み
+
+<img src="https://raw.githubusercontent.com/yyert123/headvox/main/assets/pipeline.png" alt="HeadVox の処理の流れ" width="100%">
+
+## ⚠️ リスクと制限
+
+- 既定の `edge` バックエンドは台本テキストを Microsoft のオンライン読み上げサービスに送信します。機密の台本にはローカルのバックエンドを使ってください。
+- 合成音声の利用権は使用する TTS サービスの規約に従います。商用利用の前に確認してください。
+- 合成ナレーションで他人になりすまさないでください。必要に応じて AI 音声であることを明示してください。
 
 ## よくある質問
 

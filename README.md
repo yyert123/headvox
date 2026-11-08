@@ -1,94 +1,77 @@
 <div align="center">
 
+<img src="https://raw.githubusercontent.com/yyert123/headvox/main/assets/social-preview.png" alt="HeadVox — script to voiceover with word-aligned captions" width="760">
+
 # HeadVox
 
-**Script → voiceover + word‑aligned SRT/VTT captions, in one command.**
-Open‑source Python CLI & library for talking‑head videos, explainers and Shorts. Chinese · English · Japanese.
+**Script → voiceover + word‑aligned SRT/VTT captions + per‑word JSON timings, in one command.**
 
 [![PyPI](https://img.shields.io/pypi/v/headvox.svg)](https://pypi.org/project/headvox/)
 [![Python](https://img.shields.io/pypi/pyversions/headvox.svg)](https://pypi.org/project/headvox/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yyert123/headvox/blob/main/LICENSE)
 [![Live samples](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-live%20samples-yellow)](https://huggingface.co/spaces/headvox/headvox)
+[![Docs: 简体中文](https://img.shields.io/badge/docs-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-red)](https://github.com/yyert123/headvox/blob/main/README.zh-CN.md)
+[![Docs: 日本語](https://img.shields.io/badge/docs-%E6%97%A5%E6%9C%AC%E8%AA%9E-white)](https://github.com/yyert123/headvox/blob/main/README.ja.md)
 
 **English** · [简体中文](https://github.com/yyert123/headvox/blob/main/README.zh-CN.md) · [日本語](https://github.com/yyert123/headvox/blob/main/README.ja.md)
+
+<img src="https://raw.githubusercontent.com/yyert123/headvox/main/assets/demo.gif" alt="HeadVox demo: real output with word-by-word caption timing" width="720">
+
+<sub>Real, unedited output of <code>headvox examples/demo-en.md --voice en-US-AriaNeural</code>. The highlighted word is driven by <code>voiceover.json</code>. <a href="https://github.com/yyert123/headvox/blob/main/assets/demo-en.mp4">Watch with sound (MP4)</a> · <a href="https://huggingface.co/spaces/headvox/headvox">more samples, incl. Chinese</a></sub>
 
 </div>
 
 ---
 
-**HeadVox** is a free, MIT‑licensed command‑line tool and Python library that turns a plain‑text or Markdown script into a natural‑sounding neural text‑to‑speech voiceover, and writes **SRT and WebVTT captions timed to the actual spoken words** plus a **JSON manifest with per‑word timestamps**. It can then put the voiceover and captions onto a video clip with ffmpeg — looping the clip to length and ducking background music under the voice. It is built for people who make talking‑head videos, explainers, course lessons, product demos and YouTube Shorts / TikTok / Bilibili / Douyin clips, and who are tired of hand‑timing subtitles.
+**HeadVox** is a free, MIT‑licensed Python CLI and library for creators who write their own scripts. Give it a plain‑text or Markdown script and it produces a neural text‑to‑speech voiceover, **SRT and WebVTT captions timed to the words as they are actually spoken**, and a **JSON manifest with millisecond timings for every word** — then, if you like, puts it all on your talking‑head or B‑roll clip with ffmpeg. Chinese, English and Japanese are first‑class, including width‑aware caption breaking for CJK text.
 
-```bash
-pip install "headvox[edge]"
-headvox script.md -o out/ --voice en-female --video avatar.mp4
-# out/voiceover.mp3  voiceover.srt  voiceover.vtt  voiceover.json  voiceover.mp4
-```
+## ✨ Highlights
 
-▶ **Hear real, unedited output** (Chinese and English, captions scrolling from the generated VTT): <https://huggingface.co/spaces/headvox/headvox>
+- 🎯 **Captions that don't drift** — cues are built from the TTS engine's own word‑boundary events, not estimated from character counts.
+- 🀄 **CJK‑aware line breaking** — a Chinese/Japanese character counts as two columns; lines break at punctuation inside a width budget, so mixed 中文 + English fits a 9:16 screen.
+- 🧭 **Per‑word JSON** — drive karaoke captions, avatar lip‑sync, B‑roll cuts or chapter markers (the GIF above is rendered from it).
+- ⏸️ **Pacing control** — automatic sentence/paragraph pauses plus `[pause 1.5s]` anywhere.
+- 📝 **Markdown in, speech out** — headings, emphasis, links, lists and code fences are reduced to what a narrator would say.
+- 🎬 **One‑step video** — loop a clip to the voiceover length, duck background music, add soft or burned‑in subtitles.
+- ⚡ **Clip cache** — re‑rendering after a small edit is ~8× faster on our demo scripts (see [Performance](#-performance)).
+- 🧩 **Pluggable backends** — free online `edge` voices (no API key), offline `sine` for tests, or your own engine in ~10 lines.
+- 🪶 **Zero required dependencies** — pure Python + ffmpeg. No model download, no GPU.
+
+## 📰 News
+
+- **2026‑11‑08** · v0.1.1 — full docs in English / 简体中文 / 日本語, reproducible benchmark script, live samples page.
+- **2026‑11‑08** · v0.1.0 — first public release on [PyPI](https://pypi.org/project/headvox/).
 
 ## Contents
 
-- [Why HeadVox](#why-headvox) · [Features](#features) · [How it compares](#how-it-compares)
-- [Install](#install) · [Quick start](#quick-start) · [Writing a script](#writing-a-script-that-sounds-good)
-- [Recipes](#recipes) · [Python API](#python-api) · [Timing manifest](#timing-manifest)
-- [Voices](#voices) · [Troubleshooting](#troubleshooting) · [FAQ](#faq) · [How it works](#how-it-works)
+- [Quick start](#-quick-start) · [What you get](#-what-you-get) · [Performance](#-performance) · [How it works](#%EF%B8%8F-how-it-works)
+- [Writing a script that sounds good](#writing-a-script-that-sounds-good) · [Recipes](#recipes) · [Python API](#python-api) · [Timing manifest](#timing-manifest) · [Voices](#voices)
+- [Which tool should I use?](#-which-tool-should-i-use) · [Roadmap](#%EF%B8%8F-roadmap) · [Troubleshooting](#troubleshooting) · [FAQ](#faq)
+- [Risks & limitations](#%EF%B8%8F-risks--limitations) · [Contributing](#-contributing) · [Citation](#-citation) · [Acknowledgments](#-acknowledgments)
 
-## Why HeadVox
-
-A short narrated video normally takes three separate, fiddly jobs: generate the audio, time the subtitles by hand, and mux both onto the picture. Change one sentence and you redo all three. Generic TTS tools give you an MP3 and, at best, one caption per sentence — fine for an audiobook, too long and too late for a vertical video, and awkward for Chinese or Japanese where lines must break by width, not by spaces.
-
-HeadVox treats **audio, captions and timing as one artifact**, generated from one script, so they cannot drift apart.
-
-## Features
-
-| | |
-|---|---|
-| 🎯 **Word‑aligned captions** | Cues come from the TTS engine's real word‑boundary timestamps, not from estimating by character count — so the 40th caption is as tight as the first. |
-| 🀄 **CJK‑aware line breaking** | Chinese/Japanese characters count as two columns; lines break at punctuation inside a width budget (`--caption-chars`), so mixed 中文 + English never runs off a 9:16 screen. |
-| ⏸️ **Pacing you control** | Automatic sentence (250 ms) and paragraph (700 ms) pauses, plus `[pause]`, `[pause 1.5s]`, `[pause 400ms]` anywhere in the script. |
-| 📝 **Markdown‑aware** | Headings, emphasis, links, code fences and list markers are reduced to the words a narrator would actually say. |
-| 🧭 **Per‑word JSON manifest** | Start/end milliseconds for every segment and word — ready for lip‑sync / avatar tools, kinetic typography, or your own caption styling. |
-| 🎬 **One‑step video** | Loop a talking‑head clip to the voiceover length, duck a music bed with sidechain compression, attach soft subtitles or burn them in. |
-| ⚡ **Clip cache** | Every segment is cached by text + voice settings; re‑rendering after a one‑word edit only re‑synthesizes that sentence. |
-| 🧩 **Pluggable backends** | `edge` (free online neural voices, no API key) and `sine` (offline, for tests and dry runs). Add your own engine in ~10 lines. |
-| 🪶 **Tiny footprint** | Pure Python, zero required dependencies; needs `ffmpeg`. No model weights are bundled or downloaded. |
-
-## How it compares
-
-Honest positioning — pick the tool that fits the job:
-
-| You want… | Good fit |
-|---|---|
-| One‑liner TTS of a short string to MP3 | the `edge-tts` CLI itself |
-| A full "topic → AI script → stock footage → video" generator | an end‑to‑end short‑video pipeline |
-| Subtitles for a video that **already has speech** | a Whisper‑based transcription tool |
-| **Your own script** → voiceover + captions that match it word‑for‑word, CJK‑friendly, with pause control, a reusable timing file, and optional mux onto your own clip | **HeadVox** |
-
-HeadVox is deliberately the focused, composable piece: it does one job well and hands clean files (MP3/SRT/VTT/JSON/MP4) to whatever editor or pipeline you already use.
-
-## Install
+## 🚀 Quick start
 
 ```bash
-pip install "headvox[edge]"   # with free online neural voices (recommended)
-pip install headvox           # library + offline 'sine' backend only
+pip install "headvox[edge]"      # Python 3.9+; also needs ffmpeg + ffprobe on PATH
+headvox script.md -o out/ --voice en-female
 ```
-
-Requirements: Python 3.9+, and **ffmpeg** with `ffprobe` on your PATH (<https://ffmpeg.org/download.html>; macOS `brew install ffmpeg`, Ubuntu `sudo apt install ffmpeg`, Windows `winget install ffmpeg`).
-
-## Quick start
 
 ```bash
-headvox talk.md -o out/                                  # script in, files out
-headvox talk.md -o out/ --voice zh-male --rate +8        # different voice, a bit faster
-headvox talk.md --dry-run                                # preview segmentation, no TTS call
-echo "Hello from HeadVox." | headvox - -o out/ --voice en-female
+headvox script.md -o out/ --voice zh-male --rate +8          # another voice, a bit faster
+headvox script.md --dry-run                                  # preview segmentation, no TTS call
+headvox script.md -o out/ --video avatar.mp4 --music bed.mp3 # straight to a finished MP4
+echo "Hello from HeadVox." | headvox - -o out/               # read from stdin
 ```
 
-Main options (`headvox --help` for all):
+ffmpeg: macOS `brew install ffmpeg` · Ubuntu `sudo apt install ffmpeg` · Windows `winget install ffmpeg`.
+
+<details>
+<summary><b>All CLI options</b></summary>
 
 | Option | Default | What it does |
 |---|---|---|
 | `-v, --voice` | `zh-female` | preset (`zh-female`, `zh-male`, `en-female`, `en-male`, `ja-female`, `ja-male`) or any edge‑tts voice id |
+| `-b, --backend` | `edge` | `edge`, `sine`, or a registered custom backend |
 | `--rate` / `--pitch` / `--volume` | `0` | speed %, pitch Hz, volume % (e.g. `+8`, `-5`) |
 | `--format` | `mp3` | `mp3`, `wav`, `m4a` |
 | `--sentence-pause` / `--paragraph-pause` | `250` / `700` | silence in ms |
@@ -98,6 +81,47 @@ Main options (`headvox --help` for all):
 | `--music` / `--music-volume` | – / `0.12` | background bed, looped and ducked |
 | `--burn-subs` / `--no-subs` | off | burn captions into the picture / attach none |
 | `--proxy` | – | HTTP proxy for the online backend (or `HEADVOX_PROXY`) |
+| `--dry-run` | off | print the segments and exit |
+
+</details>
+
+## 📦 What you get
+
+| File | What it is | Typical use |
+|---|---|---|
+| `voiceover.mp3` | the narration (24 kHz; `wav`/`m4a` optional) | drop on your editor's audio track |
+| `voiceover.srt` | captions, word‑aligned | Premiere, Resolve, Final Cut, CapCut/剪映, YouTube upload |
+| `voiceover.vtt` | same captions as WebVTT | HTML5 `<track>`, web players |
+| `voiceover.json` | segments + per‑word `start_ms`/`end_ms` + cues | karaoke captions, lip‑sync, auto B‑roll cuts |
+| `voiceover.mp4` | *(with `--video`)* clip + voice + music + subtitles | publish directly |
+
+## 📊 Performance
+
+Measured with [`scripts/bench.py`](https://github.com/yyert123/headvox/blob/main/scripts/bench.py) on the two demo scripts in [`examples/`](https://github.com/yyert123/headvox/blob/main/examples) — a 2‑vCPU aarch64 cloud sandbox, Python 3.12, edge voices reached through an HTTP proxy (2026‑11‑08). *Cold* includes the network round‑trips to the TTS service; *cached* is a re‑run with the clip cache warm.
+
+| Script | Backend / voice | Audio | Captions | Widest cue | Overlaps | Cold | Cached | Cold RTF |
+|---|---|---|---|---|---|---|---|---|
+| `demo-en.md` | edge · en‑US‑AriaNeural | 20.1 s | 9 | 41 / 42 | 0 | 5.75 s | 0.63 s | 0.29 |
+| `demo-zh.md` | edge · zh‑CN‑XiaoxiaoNeural | 23.2 s | 8 | 38 / 42 | 0 | 5.25 s | 0.65 s | 0.23 |
+| `demo-en.md` | sine (offline) | 18.4 s | 9 | 39 / 42 | 0 | 0.93 s | 0.60 s | 0.05 |
+
+RTF = processing time ÷ audio duration (lower is faster). Your numbers will mostly depend on your network latency to the TTS service. Reproduce:
+
+```bash
+pip install "headvox[edge]"
+python scripts/bench.py examples/demo-en.md --voice en-US-AriaNeural
+python scripts/bench.py examples/demo-zh.md --voice zh-CN-XiaoxiaoNeural
+```
+
+## ⚙️ How it works
+
+<img src="https://raw.githubusercontent.com/yyert123/headvox/main/assets/pipeline.png" alt="HeadVox pipeline: parse, synthesize, assemble, caption, mux" width="100%">
+
+1. **Parse** — split the script into speakable segments, strip Markdown, honour `[pause]` directives.
+2. **Synthesize** — call the backend per segment, cached by text + voice settings.
+3. **Assemble** — build one 24 kHz track, trimming engine padding so pauses are exact.
+4. **Caption** — build cues from word boundaries, breaking at punctuation within a CJK‑aware width budget; cues never overlap.
+5. **Mux** *(optional)* — ffmpeg loops the clip, ducks music with sidechain compression, adds soft or burned‑in subtitles.
 
 ## Writing a script that sounds good
 
@@ -134,6 +158,8 @@ headvox intro.en.md -o out/en --voice en-female
 for f in scripts/*.md; do headvox "$f" -o "out/$(basename "$f" .md)"; done
 ```
 Unchanged sentences come from the cache, so re‑runs are fast.
+
+**Make a karaoke preview like the one above** — `python scripts/render_demo.py out/` renders frames from any output folder (needs `numpy` and `pillow`).
 
 ## Python API
 
@@ -201,6 +227,30 @@ Use it to drive mouth shapes on an avatar, highlight the active word (karaoke‑
 
 Any other edge‑tts voice id works too (`edge-tts --list-voices`), which opens up many more languages and accents; caption line‑breaking is tuned for CJK and Latin scripts.
 
+## 🤔 Which tool should I use?
+
+Honest positioning — pick the tool that fits the job:
+
+| You want… | Good fit |
+|---|---|
+| One‑liner TTS of a short string to MP3 | the `edge-tts` CLI itself |
+| Voice cloning / voice design / studio‑grade local speech models | a model such as VoxCPM, CosyVoice or F5‑TTS (GPU recommended) |
+| "Topic → AI script → stock footage → video" automation | an end‑to‑end short‑video generator |
+| Subtitles for a video that **already has speech** | a Whisper‑based transcription tool |
+| **Your own script** → voiceover + captions that match it word for word, CJK‑friendly, with pause control, a reusable timing file, and optional mux onto your clip | **HeadVox** |
+
+HeadVox is deliberately the focused, composable layer between "a script" and "a publishable clip": it hands clean MP3/SRT/VTT/JSON/MP4 files to whatever editor or pipeline you already use, and any speech engine can sit behind it as a backend.
+
+## 🗺️ Roadmap
+
+- [ ] Local‑model backends (e.g. VoxCPM / CosyVoice) with word timings, for fully offline and cloned voices
+- [ ] ASS output with styled / karaoke captions
+- [ ] Multi‑speaker scripts (`[voice zh-male]` switches)
+- [ ] Per‑language line‑breaking rules beyond CJK + Latin
+- [ ] Optional web UI
+
+Ideas and PRs welcome — open an [issue](https://github.com/yyert123/headvox/issues).
+
 ## Troubleshooting
 
 | Symptom | Fix |
@@ -225,15 +275,15 @@ Any other edge‑tts voice id works too (`edge-tts --list-voices`), which opens 
 
 **Is this affiliated with Microsoft or edge‑tts?** No. HeadVox is an independent, original project that uses `edge-tts` as one optional backend.
 
-## How it works
+## ⚠️ Risks & limitations
 
-1. **Parse** — split the script into speakable segments, strip Markdown, honour `[pause]` directives.
-2. **Synthesize** — call the backend per segment, cached by text + voice settings.
-3. **Assemble** — build one 24 kHz track, trimming engine padding so pauses are exact.
-4. **Caption** — build cues from word boundaries, breaking at punctuation within a CJK‑aware width budget.
-5. **Mux** *(optional)* — ffmpeg puts it on video, loops the clip, ducks music, adds soft or burned‑in subtitles.
+- **Online backend.** The default `edge` backend sends your script text to Microsoft's online read‑aloud service and needs internet. Use a local backend for confidential scripts.
+- **Voice rights.** HeadVox's code is MIT, but the rights to synthesized speech come from the TTS service you use — check its terms for commercial use.
+- **Disclosure.** Synthetic narration can be mistaken for a real person. Don't use it to impersonate anyone, and label AI‑voiced content where your platform or audience expects it.
+- **Engine availability.** Individual voices can be temporarily unavailable (`NoAudioReceived`); switch voice or retry.
+- **Scope.** HeadVox does not render faces, clone voices or transcribe existing audio.
 
-## Development
+## 🤝 Contributing
 
 ```bash
 git clone https://github.com/yyert123/headvox.git
@@ -242,14 +292,24 @@ pip install -e ".[dev]"
 pytest            # runs fully offline via the 'sine' backend
 ```
 
-Issues and pull requests are welcome — especially new backends, more languages' line‑breaking rules, and caption styles.
+Especially welcome: new backends, line‑breaking rules for more languages, caption styles, and docs translations.
 
-## Citation
+## 📖 Citation
 
-If HeadVox helps your research or course, see [`CITATION.cff`](https://github.com/yyert123/headvox/blob/main/CITATION.cff).
+If HeadVox helps your course, research or product, please cite it via [`CITATION.cff`](https://github.com/yyert123/headvox/blob/main/CITATION.cff) (GitHub's "Cite this repository" button), and consider starring ⭐ the repo.
 
-## License
+## 📄 License
 
 [MIT](https://github.com/yyert123/headvox/blob/main/LICENSE). HeadVox is original work and is not affiliated with Microsoft or the `edge-tts` project.
 
-<!-- keywords: text to speech, TTS, voiceover generator, AI voiceover, subtitle generator, SRT generator, WebVTT, word-level timestamps, talking head video, faceless video, YouTube Shorts, TikTok, Bilibili, Douyin, edge-tts, Chinese TTS, Japanese TTS, 文字转语音, 配音, 口播, 字幕生成, 音声合成, 字幕 -->
+## 🙏 Acknowledgments
+
+- [edge-tts](https://github.com/rany2/edge-tts) for the Python client to Microsoft Edge's online voices
+- [FFmpeg](https://ffmpeg.org/) for audio/video processing
+- Everyone who tries HeadVox, files issues and sends ideas
+
+## ⭐ Star history
+
+[![Star History Chart](https://api.star-history.com/svg?repos=yyert123/headvox&type=Date)](https://star-history.com/#yyert123/headvox&Date)
+
+<!-- keywords: text to speech, TTS, voiceover generator, AI voiceover, subtitle generator, SRT generator, WebVTT, word-level timestamps, karaoke captions, talking head video, faceless video, YouTube Shorts, TikTok, Bilibili, Douyin, edge-tts, Chinese TTS, Japanese TTS, 文字转语音, 配音, 口播, 字幕生成, 音声合成, 字幕 -->

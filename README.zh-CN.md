@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="https://raw.githubusercontent.com/yyert123/headvox/main/assets/social-preview.png" alt="HeadVox：文字稿一键生成口播配音和逐字对齐字幕" width="760">
+
 # HeadVox
 
 **文字稿 → 口播配音 + 逐字对齐的 SRT/VTT 字幕，一条命令完成。**
@@ -11,6 +13,10 @@
 [![在线试听](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-%E5%9C%A8%E7%BA%BF%E8%AF%95%E5%90%AC-yellow)](https://huggingface.co/spaces/headvox/headvox)
 
 [English](https://github.com/yyert123/headvox/blob/main/README.md) · **简体中文** · [日本語](https://github.com/yyert123/headvox/blob/main/README.ja.md)
+
+<img src="https://raw.githubusercontent.com/yyert123/headvox/main/assets/demo.gif" alt="HeadVox 演示：真实输出，逐词高亮的字幕时间轴" width="720">
+
+<sub>真实未修饰的输出（英文样例，Aria 音色），高亮的词由 <code>voiceover.json</code> 的逐词时间驱动。<a href="https://github.com/yyert123/headvox/blob/main/assets/demo-en.mp4">带声音的 MP4</a> · <a href="https://huggingface.co/spaces/headvox/headvox">更多样例（含中文）</a></sub>
 
 </div>
 
@@ -25,6 +31,11 @@ headvox 稿子.md -o out/ --voice zh-female --video 口播素材.mp4
 ```
 
 ▶ **试听未经修饰的真实输出**（中英文样例，字幕按生成的 VTT 实时滚动）：<https://huggingface.co/spaces/headvox/headvox>
+
+## 📰 动态
+
+- **2026-11-08** · v0.1.1：英文 / 简体中文 / 日本語 完整文档、可复现的性能测试脚本、在线样例页。
+- **2026-11-08** · v0.1.0：首个公开版本发布到 [PyPI](https://pypi.org/project/headvox/)。
 
 ## 为什么做 HeadVox
 
@@ -181,13 +192,42 @@ for cue in res.cues:
 
 **和微软或 edge-tts 有关系吗？** 没有。HeadVox 是独立的原创项目，只是把 `edge-tts` 作为可选后端之一。
 
+## 📊 实测性能
+
+使用 [`scripts/bench.py`](https://github.com/yyert123/headvox/blob/main/scripts/bench.py) 对 [`examples/`](https://github.com/yyert123/headvox/blob/main/examples) 中的两份示例稿实测：2 核 aarch64 云端沙箱、Python 3.12，edge 语音经 HTTP 代理访问（2026-11-08）。「首次」包含访问语音服务的网络往返，「缓存」为缓存命中后的重跑。
+
+| 稿子 | 后端 / 音色 | 音频时长 | 字幕条数 | 最宽一条 | 重叠 | 首次 | 缓存 | 首次 RTF |
+|---|---|---|---|---|---|---|---|---|
+| `demo-en.md` | edge · en-US-AriaNeural | 20.1 秒 | 9 | 41 / 42 | 0 | 5.75 秒 | 0.63 秒 | 0.29 |
+| `demo-zh.md` | edge · zh-CN-XiaoxiaoNeural | 23.2 秒 | 8 | 38 / 42 | 0 | 5.25 秒 | 0.65 秒 | 0.23 |
+| `demo-en.md` | sine（离线） | 18.4 秒 | 9 | 39 / 42 | 0 | 0.93 秒 | 0.60 秒 | 0.05 |
+
+RTF = 处理耗时 ÷ 音频时长，越低越快。实际速度主要取决于你到语音服务的网络延迟。复现：`python scripts/bench.py examples/demo-zh.md --voice zh-CN-XiaoxiaoNeural`
+
 ## 工作原理
+
+<img src="https://raw.githubusercontent.com/yyert123/headvox/main/assets/pipeline.png" alt="HeadVox 流程：解析、合成、拼接、字幕、合成视频" width="100%">
 
 1. **解析**：把稿子拆成适合朗读的片段，去掉 Markdown，识别 `[pause]` 指令。
 2. **合成**：逐段调用语音后端，按文本和音色参数缓存。
 3. **拼接**：合成一条 24 kHz 音轨，修掉引擎自带的首尾空白，保证停顿精确。
 4. **字幕**：根据词边界生成字幕，在中日文友好的宽度预算内按标点断行。
 5. **合成视频**（可选）：ffmpeg 合成到视频上，循环画面、压低音乐，添加软字幕或硬字幕。
+
+## 🗺️ 路线图
+
+- [ ] 本地模型后端（如 VoxCPM / CosyVoice），支持完全离线和声音克隆
+- [ ] ASS 字幕输出，支持样式和卡拉 OK 效果
+- [ ] 多角色稿子（`[voice zh-male]` 切换音色）
+- [ ] 更多语言的断行规则
+- [ ] 可选的 Web 界面
+
+## ⚠️ 风险与局限
+
+- **在线后端**：默认 `edge` 后端会把稿子文本发送到微软的在线朗读服务，需要联网。保密内容请接入本地后端。
+- **声音权利**：HeadVox 代码为 MIT 协议，合成语音的使用权取决于所用语音服务的条款，商用前请确认。
+- **如实标注**：合成配音可能被误认为真人。请勿用于冒充他人；平台或观众有要求时请标注 AI 配音。
+- **能力范围**：HeadVox 不生成人脸、不克隆声音、不识别已有音频。
 
 ## 参与开发
 
@@ -200,6 +240,15 @@ pytest            # 通过离线 sine 后端完整运行
 
 欢迎提 Issue 和 PR，特别是新的语音后端、更多语言的断行规则和字幕样式。
 
+## 📖 引用
+
+如果 HeadVox 对你的课程、研究或产品有帮助，欢迎通过 [`CITATION.cff`](https://github.com/yyert123/headvox/blob/main/CITATION.cff)（GitHub 右侧「Cite this repository」）引用，也欢迎点个 ⭐。
+
 ## 许可证
 
 [MIT](https://github.com/yyert123/headvox/blob/main/LICENSE)。HeadVox 为原创作品，与 Microsoft 及 `edge-tts` 项目无关联。
+
+## 🙏 致谢
+
+- [edge-tts](https://github.com/rany2/edge-tts)：访问 Microsoft Edge 在线语音的 Python 客户端
+- [FFmpeg](https://ffmpeg.org/)：音视频处理
