@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+- Documentation: full English README, plus Simplified Chinese and Japanese READMEs.
+- Project links (GitHub, live samples, docs) and expanded keywords/classifiers on PyPI.
+- Added `llms.txt` and `CITATION.cff`.
+- No code changes.
+
 ## 0.1.0
 - First release.
 - Script -> voiceover pipeline with Markdown parsing and pause directives.

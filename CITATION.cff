@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use HeadVox, please cite it as below."
+title: "HeadVox: script to voiceover with word-aligned captions"
+type: software
+authors:
+  - name: "HeadVox contributors"
+version: 0.1.1
+date-released: 2026-11-08
+license: MIT
+repository-code: "https://github.com/yyert123/headvox"
+url: "https://huggingface.co/spaces/headvox/headvox"
+abstract: >-
+  HeadVox is an open-source Python CLI and library that turns a text or Markdown
+  script into a neural text-to-speech voiceover with SRT/WebVTT captions aligned
+  to the spoken words and a per-word JSON timing manifest, with optional ffmpeg
+  video muxing. Supports Chinese, English and Japanese.
+keywords:
+  - text-to-speech
+  - voiceover
+  - subtitles
+  - word-level timestamps
+  - talking-head video

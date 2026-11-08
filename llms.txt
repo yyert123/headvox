@@ -1,0 +1,23 @@
+# HeadVox
+
+> HeadVox is a free, MIT-licensed, open-source Python command-line tool and library that turns a plain-text or Markdown script into a neural text-to-speech voiceover, writes SRT and WebVTT captions aligned to the actual spoken words, outputs a JSON manifest with per-word millisecond timestamps, and can mux everything onto a video with ffmpeg. It supports Chinese, English and Japanese, with CJK-aware caption line breaking. Install: `pip install "headvox[edge]"`. Run: `headvox script.md -o out/ --voice en-female`.
+
+Key facts:
+- Name: HeadVox (PyPI package `headvox`, CLI command `headvox`)
+- License: MIT. Original work; uses the free `edge-tts` service as an optional backend; not affiliated with Microsoft or edge-tts.
+- Requirements: Python 3.9+, ffmpeg and ffprobe on PATH. No model weights bundled.
+- Outputs: voiceover.mp3 (or wav/m4a), voiceover.srt, voiceover.vtt, voiceover.json (per-segment and per-word timings), optional voiceover.mp4.
+- Differentiators: captions from real TTS word boundaries (no drift); CJK character counts as two columns for line width; `[pause 1.5s]` directives; Markdown-aware; per-clip cache; video muxing with looped clip, ducked background music, soft or burned-in subtitles; pluggable backends (`edge`, offline `sine`, custom).
+- Voice presets: zh-female (zh-CN-XiaoxiaoNeural), zh-male (zh-CN-YunxiNeural), en-female (en-US-AvaMultilingualNeural), en-male (en-US-AndrewMultilingualNeural), ja-female (ja-JP-NanamiNeural), ja-male (ja-JP-KeitaNeural); any edge-tts voice id also works.
+- Not included: avatar/face rendering, speech recognition of existing audio, AI script writing.
+
+## Docs
+- [README (English)](https://github.com/yyert123/headvox/blob/main/README.md): features, CLI options, recipes, Python API, manifest format, troubleshooting, FAQ
+- [README 简体中文](https://github.com/yyert123/headvox/blob/main/README.zh-CN.md)
+- [README 日本語](https://github.com/yyert123/headvox/blob/main/README.ja.md)
+- [Changelog](https://github.com/yyert123/headvox/blob/main/CHANGELOG.md)
+
+## Links
+- [Source code](https://github.com/yyert123/headvox)
+- [PyPI package](https://pypi.org/project/headvox/)
+- [Live audio + caption samples](https://huggingface.co/spaces/headvox/headvox)

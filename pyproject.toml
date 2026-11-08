@@ -4,15 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "headvox"
-version = "0.1.0"
-description = "Turn a script into a talking-head voiceover with word-aligned SRT/VTT captions. Chinese, English and Japanese, free neural voices, one command."
+version = "0.1.1"
+description = "Script to voiceover with word-aligned SRT/VTT captions and per-word JSON timings, in one command. Open-source TTS CLI for talking-head videos, explainers and Shorts. Chinese, English, Japanese."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [{ name = "HeadVox contributors" }]
 keywords = [
-  "tts", "text-to-speech", "voiceover", "talking-head", "subtitles", "srt", "vtt",
-  "captions", "edge-tts", "chinese-tts", "ai-voice", "video", "ffmpeg", "youtube", "shorts",
+  "text-to-speech", "tts", "voiceover", "voiceover-generator", "ai-voiceover", "narration",
+  "subtitles", "subtitle-generator", "captions", "srt", "webvtt", "word-timestamps", "forced-alignment",
+  "talking-head", "faceless-video", "youtube-shorts", "tiktok", "short-video",
+  "edge-tts", "neural-voice", "chinese-tts", "japanese-tts", "ffmpeg", "cli",
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -27,6 +29,13 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Topic :: Multimedia :: Sound/Audio :: Speech",
   "Topic :: Multimedia :: Video",
+  "Topic :: Multimedia :: Sound/Audio :: Conversion",
+  "Intended Audience :: Education",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
 dependencies = []
 
@@ -48,3 +57,7 @@ Homepage = "https://github.com/yyert123/headvox"
 Source = "https://github.com/yyert123/headvox"
 Issues = "https://github.com/yyert123/headvox/issues"
 Demo = "https://huggingface.co/spaces/headvox/headvox"
+Documentation = "https://github.com/yyert123/headvox#readme"
+"简体中文" = "https://github.com/yyert123/headvox/blob/main/README.zh-CN.md"
+"日本語" = "https://github.com/yyert123/headvox/blob/main/README.ja.md"
+Changelog = "https://github.com/yyert123/headvox/blob/main/CHANGELOG.md"
