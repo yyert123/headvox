@@ -39,6 +39,7 @@
 
 ## 📰 News
 
+- **2026‑11‑08** · v0.1.2 — real demo, measured performance, pipeline diagram, roadmap and risks in the README.
 - **2026‑11‑08** · v0.1.1 — full docs in English / 简体中文 / 日本語, reproducible benchmark script, live samples page.
 - **2026‑11‑08** · v0.1.0 — first public release on [PyPI](https://pypi.org/project/headvox/).
 

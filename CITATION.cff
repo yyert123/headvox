@@ -4,7 +4,7 @@ title: "HeadVox: script to voiceover with word-aligned captions"
 type: software
 authors:
   - name: "HeadVox contributors"
-version: 0.1.1
+version: 0.1.2
 date-released: 2026-11-08
 license: MIT
 repository-code: "https://github.com/yyert123/headvox"

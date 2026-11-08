@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "headvox"
-version = "0.1.1"
+version = "0.1.2"
 description = "Script to voiceover with word-aligned SRT/VTT captions and per-word JSON timings, in one command. Open-source TTS CLI for talking-head videos, explainers and Shorts. Chinese, English, Japanese."
 readme = "README.md"
 requires-python = ">=3.9"
